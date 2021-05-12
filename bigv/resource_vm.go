@@ -15,7 +15,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -278,11 +278,6 @@ func resourceBigvVMCreate(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("Create VM status %d from bigv: %s", resp.StatusCode, body)
 	}
 
-	d.Partial(true)
-	for _, i := range []string{"name", "group_id", "group", "zone", "cores", "memory", "ipv4", "ipv6", "root_password"} {
-		d.SetPartial(i)
-	}
-
 	for k, v := range resp.Header {
 		log.Printf("[DEBUG] %s: %s", k, v)
 	}
@@ -307,8 +302,6 @@ func resourceBigvVMCreate(d *schema.ResourceData, meta interface{}) error {
 			}
 		}
 	}
-
-	d.Partial(false)
 
 	return nil
 
